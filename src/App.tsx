@@ -103,6 +103,44 @@ const screenshotShowcase = [
   },
 ];
 
+const platformCardShowcase = [
+  {
+    label: 'Equity Fund',
+    title: 'Fund-level card',
+    description: 'A compact fund summary view for ownership structure, status, and portfolio context.',
+    detail: 'Use this view to establish how the platform frames ownership, fund identity, and portfolio-level status in a concise record.',
+    src: '/screenshots/equity_fund_card.png',
+    aspectRatio: 'aspect-[5/7]',
+  },
+  {
+    label: 'Real Estate Card',
+    title: 'Asset snapshot',
+    description: 'A quick property card for reviewing asset identity, progress, and operating context.',
+    detail: 'This card shows how asset-level information can stay legible for teams reviewing property status without opening a full workspace.',
+    src: '/screenshots/real_estate_card.png',
+    aspectRatio: 'aspect-[11/12]',
+  },
+];
+
+const operationsShowcase = [
+  {
+    label: 'Investor Dashboard',
+    title: 'Dashboard in operating context',
+    description: 'The investor dashboard fits here because it shows how reporting is generated from live operating workflows rather than from a separate static layer.',
+    badge: 'Active development',
+    src: '/screenshots/investor_dash.png',
+    aspectRatio: 'aspect-[16/9]',
+  },
+  {
+    label: 'Portfolio Growth',
+    title: 'Performance analytics',
+    description: 'This view reinforces the interpretation layer of the operating model by turning live data into a clear performance and forecasting narrative.',
+    badge: 'Live metrics',
+    src: '/screenshots/portfolio-growth.png',
+    aspectRatio: 'aspect-[16/10]',
+  },
+];
+
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -204,14 +242,19 @@ function SectionLabel({ children }: { children: string }) {
 
 function HeroShowcase() {
   const [active, setActive] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
   const items = useMemo(() => screenshotShowcase, []);
 
   useEffect(() => {
+    if (isZoomed) {
+      return;
+    }
+
     const timer = window.setInterval(() => {
       setActive((value) => (value + 1) % items.length);
     }, 2600);
     return () => window.clearInterval(timer);
-  }, [items.length]);
+  }, [isZoomed, items.length]);
 
   return (
     <div className="relative mx-auto w-full max-w-[48rem] lg:max-w-none">
@@ -245,6 +288,7 @@ function HeroShowcase() {
               src={items[active].src}
               alt={items[active].description}
               aspectRatio={items[active].aspectRatio}
+              onZoomChange={setIsZoomed}
             />
           </motion.div>
         </AnimatePresence>
@@ -267,6 +311,205 @@ function HeroShowcase() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function RotatingShowcase({
+  items,
+  theme = 'light',
+  interval = 3200,
+  imageAspectClass,
+}: {
+  items: {
+    label: string;
+    title: string;
+    description: string;
+    src: string;
+    aspectRatio: string;
+    badge?: string;
+    detail?: string;
+  }[];
+  theme?: 'light' | 'dark';
+  interval?: number;
+  imageAspectClass?: string;
+}) {
+  const [active, setActive] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  useEffect(() => {
+    if (isZoomed) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setActive((value) => (value + 1) % items.length);
+    }, interval);
+
+    return () => window.clearInterval(timer);
+  }, [interval, isZoomed, items.length]);
+
+  const activeItem = items[active];
+  const isDark = theme === 'dark';
+
+  return (
+    <div className="grid gap-5">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeItem.label}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -16 }}
+          transition={{ duration: 0.28 }}
+          className={`rounded-[2rem] border p-4 shadow-[0_20px_45px_rgba(15,23,42,0.06)] ${
+            isDark ? 'border-cyan-300/15 bg-cyan-300/5' : 'border-slate-200 bg-white'
+          }`}
+        >
+          <ScreenshotFrame
+            label={activeItem.label}
+            src={activeItem.src}
+            alt={activeItem.description}
+            aspectRatio={imageAspectClass ?? activeItem.aspectRatio}
+            onZoomChange={setIsZoomed}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {items.map((item, index) => {
+          const activeCard = index === active;
+
+          return (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => setActive(index)}
+              className={`rounded-[1.5rem] border px-5 py-5 text-left transition ${
+                isDark
+                  ? activeCard
+                    ? 'border-cyan-300/40 bg-white/10 text-white shadow-[0_18px_40px_rgba(8,145,178,0.12)]'
+                    : 'border-white/10 bg-white/5 text-slate-300 hover:border-white/20 hover:bg-white/7'
+                  : activeCard
+                    ? 'border-slate-950 bg-slate-950 text-white shadow-[0_18px_40px_rgba(15,23,42,0.12)]'
+                    : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:border-slate-300 hover:bg-white'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className={`text-[0.68rem] font-semibold uppercase tracking-[0.22em] ${activeCard ? 'text-inherit/75' : isDark ? 'text-slate-400' : 'text-slate-400'}`}>
+                  {item.label}
+                </div>
+                {item.badge ? (
+                  <div
+                    className={`rounded-full px-2.5 py-1 text-[0.68rem] font-medium ${
+                      activeCard
+                        ? isDark
+                          ? 'bg-amber-400/10 text-amber-200'
+                          : 'bg-cyan-100 text-cyan-800'
+                        : isDark
+                          ? 'bg-white/5 text-slate-400'
+                          : 'bg-slate-200/80 text-slate-500'
+                    }`}
+                  >
+                    {item.badge}
+                  </div>
+                ) : null}
+              </div>
+              <div className="mt-3 text-lg font-semibold sm:text-xl">{item.title}</div>
+              <p className={`mt-3 text-sm leading-6 ${activeCard ? 'text-inherit/80' : isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                {item.description}
+              </p>
+              {item.detail ? (
+                <p className={`mt-3 text-sm leading-6 ${activeCard ? 'text-inherit/70' : isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  {item.detail}
+                </p>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function PlatformSupportingViews() {
+  const [active, setActive] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  useEffect(() => {
+    if (isZoomed) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setActive((value) => (value + 1) % platformCardShowcase.length);
+    }, 3200);
+
+    return () => window.clearInterval(timer);
+  }, [isZoomed]);
+
+  const activeItem = platformCardShowcase[active];
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[0.95fr_0.7fr] lg:items-start">
+      <div>
+        <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Supporting views</div>
+        <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
+          Compact interfaces that explain the platform breadth.
+        </h3>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
+          These smaller cards give visitors a cleaner read on how fund and asset records are structured without
+          overpowering the main platform story.
+        </p>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {platformCardShowcase.map((item, index) => {
+            const activeCard = index === active;
+
+            return (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => setActive(index)}
+                className={`rounded-[1.5rem] border px-5 py-5 text-left transition ${
+                  activeCard
+                    ? 'border-slate-950 bg-slate-950 text-white shadow-[0_18px_40px_rgba(15,23,42,0.12)]'
+                    : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                <div className={`text-[0.68rem] font-semibold uppercase tracking-[0.22em] ${activeCard ? 'text-inherit/75' : 'text-slate-400'}`}>
+                  {item.label}
+                </div>
+                <div className="mt-3 text-lg font-semibold sm:text-xl">{item.title}</div>
+                <p className={`mt-3 text-sm leading-6 ${activeCard ? 'text-inherit/80' : 'text-slate-600'}`}>
+                  {item.description}
+                </p>
+                <p className={`mt-3 text-sm leading-6 ${activeCard ? 'text-inherit/70' : 'text-slate-500'}`}>
+                  {item.detail}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeItem.label}
+          initial={{ opacity: 0, x: 18 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -18 }}
+          transition={{ duration: 0.28 }}
+          className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-[0_20px_45px_rgba(15,23,42,0.06)] lg:sticky lg:top-28"
+        >
+          <ScreenshotFrame
+            label={activeItem.label}
+            src={activeItem.src}
+            alt={activeItem.description}
+            aspectRatio="aspect-[4/3]"
+            onZoomChange={setIsZoomed}
+          />
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
@@ -402,7 +645,7 @@ export default function App() {
                 className="rounded-[2rem] border border-slate-200 bg-slate-950 p-5 text-white shadow-[0_20px_45px_rgba(15,23,42,0.12)]"
               >
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">Why this matters</div>
-                <h3 className="mt-3 text-2xl font-semibold tracking-tight">Let the interface prove the platform depth.</h3>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight">Let the platform do the heavy work.</h3>
                 <p className="mt-4 text-sm leading-7 text-slate-300">
                   Investors should see product substance early. Larger screenshots create that signal faster than abstract
                   claims alone.
@@ -420,6 +663,17 @@ export default function App() {
                 </div>
               </motion.div>
             </div>
+
+            <div className="mt-8">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="rounded-[2rem] border border-slate-200 bg-slate-50/80 p-6 shadow-[0_20px_45px_rgba(15,23,42,0.04)]"
+              >
+                <PlatformSupportingViews />
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -428,7 +682,7 @@ export default function App() {
             <div>
               <SectionLabel>Operating model</SectionLabel>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-                One system connecting portfolio oversight, asset execution, and investor communication.
+                A platform connecting portfolio oversight, asset execution, and investor communication.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-300">
                 Finance Remade links daily execution with board-level visibility so operating teams, finance leaders, and
@@ -458,13 +712,7 @@ export default function App() {
               transition={{ duration: 0.55 }}
               className="grid gap-5"
             >
-              <div className="rounded-[2rem] border border-white/10 bg-white/5 p-4">
-                <ScreenshotFrame
-                  label="Portfolio Growth"
-                  src="/screenshots/portfolio-growth.png"
-                  alt="Performance analytics view with portfolio growth metrics."
-                />
-              </div>
+              <RotatingShowcase items={operationsShowcase} theme="dark" imageAspectClass="aspect-[16/9]" />
               <div className="grid gap-5 md:grid-cols-2">
                 <div className="rounded-[2rem] border border-white/10 bg-white/5 p-4">
                   <ScreenshotFrame
@@ -492,13 +740,13 @@ export default function App() {
             <div className="grid gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
               <div className="max-w-2xl">
                 <SectionLabel>Trust architecture</SectionLabel>
-              <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                Governance and reporting designed to make due diligence easier.
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-slate-600">
-                Governance needs to be visible, legible, and built into the workflow. The platform keeps oversight close to
-                the underlying operational record.
-              </p>
+                <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                  Governance and reporting actively being developed and refined.
+                </h2>
+                <p className="mt-5 text-lg leading-8 text-slate-600">
+                  This part of the application is still in progress. The team is actively shaping governance controls,
+                  reporting flows, and due-diligence views so oversight stays close to the underlying operational record.
+                </p>
               </div>
               <div className="grid gap-4">
                 {trustSignals.map((signal, index) => (
