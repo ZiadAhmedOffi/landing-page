@@ -5,44 +5,181 @@ import {
   Blocks,
   Building2,
   ChevronRight,
+  FileSearch,
   Globe2,
+  Landmark,
   LineChart,
   LockKeyhole,
   Menu,
   Radar,
+  Rocket,
   ShieldCheck,
   Sparkles,
+  Workflow,
   X,
 } from 'lucide-react';
 import { ScreenshotFrame } from './components/ScreenshotFrame';
 
+const DEMO_REQUEST_EMAIL = 'ziadahmedoffi@gmail.com';
+
+function promptForDemoRequest(sourceLabel: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const submittedEmail = window.prompt('Enter your email so we can prepare the application demo request:');
+  const email = submittedEmail?.trim();
+
+  if (!email) {
+    return;
+  }
+
+  const isLikelyEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  if (!isLikelyEmail) {
+    window.alert('Please enter a valid email address.');
+    return;
+  }
+
+  const subject = encodeURIComponent('Application demo request');
+  const body = encodeURIComponent(
+    [
+      'Hello,',
+      '',
+      'There is a new request for an application demo.',
+      `Requester email: ${email}`,
+      `CTA source: ${sourceLabel}`,
+      '',
+      'Please follow up with the requester to continue the conversation.',
+    ].join('\n'),
+  );
+
+  window.location.href = `mailto:${DEMO_REQUEST_EMAIL}?subject=${subject}&body=${body}`;
+}
+
 const navItems = [
+  { label: 'Thesis', href: '#thesis' },
   { label: 'Platform', href: '#platform' },
   { label: 'Operations', href: '#operations' },
   { label: 'Trust', href: '#trust' },
+  { label: 'Roadmap', href: '#roadmap' },
   { label: 'Momentum', href: '#momentum' },
 ];
 
 const servicePillars = [
   {
     icon: Radar,
+    slug: 'portfolio-intelligence',
     title: 'Portfolio intelligence',
     description:
       'Bring private equity, real estate, and investor reporting into one operating view with live portfolio signals.',
+    importance:
+      'Investment teams move slower when portfolio performance, asset exposure, and investor updates live in separate systems. Portfolio intelligence matters because leadership needs a current view of performance, risk, and capital posture before making decisions.',
+    challenge:
+      'The application addresses the disconnect between underlying portfolio activity and the executive view by structuring updates, transactions, and operating metrics into a shared model instead of a reporting layer patched together at the end of the month.',
+    approach: [
+      'Capture portfolio events, ownership changes, and operating metrics in one structured system.',
+      'Normalize inputs across private equity, real estate, and investor reporting workflows so leadership can compare performance without manual reconciliation.',
+      'Surface executive dashboards, trend views, and portfolio summaries directly from the live operating record.',
+    ],
+    automation: [
+      'Automated rollups from asset-level activity into portfolio-level visibility.',
+      'Recurring investor summary preparation from the same dataset used by operators.',
+      'Exception highlighting for drift, lagging assets, and reporting gaps.',
+    ],
+    outcomes: [
+      'Faster portfolio reviews',
+      'Cleaner investor communication',
+      'Less spreadsheet stitching across funds and assets',
+    ],
+    supportingView: {
+      label: 'Executive Suite',
+      title: 'Portfolio command center',
+      description: 'A single workspace for performance visibility, cross-asset comparisons, and investor-facing summaries.',
+      src: '/screenshots/executive-suit.png',
+      aspectRatio: 'aspect-[16/10]',
+    },
   },
   {
     icon: Building2,
+    slug: 'asset-operations',
     title: 'Asset operations',
     description:
       'Track projects, financing structures, distributions, and jurisdiction-specific rules without spreadsheet sprawl.',
+    importance:
+      'Asset operations are where execution risk accumulates. Teams need a system that keeps projects, financing, distributions, and asset-specific obligations connected so operational follow-through does not depend on fragmented trackers.',
+    challenge:
+      'The application approaches this by turning each asset into an operating record with linked workflows, status updates, and financial context, making it easier to coordinate execution across teams and jurisdictions.',
+    approach: [
+      'Maintain structured records for each asset, project, and financing arrangement.',
+      'Track milestones, approvals, and obligations in context instead of across disconnected tools.',
+      'Connect property operations and distribution workflows back to the broader investment structure.',
+    ],
+    automation: [
+      'Workflow-driven status tracking for projects and assets.',
+      'Reminder and follow-through support around financing, distributions, and jurisdiction-specific tasks.',
+      'Automatic propagation of asset updates into portfolio and reporting views.',
+    ],
+    outcomes: [
+      'More reliable execution',
+      'Reduced manual coordination',
+      'Clearer visibility into asset-level progress and blockers',
+    ],
+    supportingView: {
+      label: 'Real Estate',
+      title: 'Asset and jurisdiction workflows',
+      description: 'A product view focused on property records, financing structures, and operational progress.',
+      src: '/screenshots/real-estate.png',
+      aspectRatio: 'aspect-[16/10]',
+    },
   },
   {
     icon: ShieldCheck,
+    slug: 'institutional-governance',
     title: 'Institutional governance',
     description:
       'Maintain approval trails, investor logs, and role-based controls suitable for operators, auditors, and partners.',
+    importance:
+      'Governance is what makes an investment platform credible at scale. Operators, finance teams, and investors need to trust the record behind approvals, capital movements, and reporting decisions.',
+    challenge:
+      'The application is being built to keep governance close to operational activity, so controls, logs, and reporting evidence are generated as teams work rather than reconstructed after the fact.',
+    approach: [
+      'Attach permissions, ownership context, and event history to the same workflows that drive execution.',
+      'Keep investor records, approvals, and distribution history in an auditable operational timeline.',
+      'Support multi-entity structures so governance reflects how funds, SPVs, and assets are actually organized.',
+    ],
+    automation: [
+      'Automatic event logging for ownership and capital movement.',
+      'Approval traceability tied to the relevant asset, fund, or investor action.',
+      'Partner-ready reporting support generated from the governed system of record.',
+    ],
+    outcomes: [
+      'Stronger audit readiness',
+      'More trustworthy investor reporting',
+      'Reduced control gaps between teams',
+    ],
+    supportingView: {
+      label: 'Investor Ledger',
+      title: 'Ownership and distribution records',
+      description: 'A view centered on investor activity, payout history, and the operational trail behind each movement.',
+      src: '/screenshots/investor-log.png',
+      aspectRatio: 'aspect-[16/10]',
+    },
   },
 ];
+
+function getCapabilitySlugFromHash(hash: string) {
+  const match = hash.match(/^#capability\/([^/?]+)/);
+  return match?.[1] ?? null;
+}
+
+function setCapabilityHash(slug: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.location.hash = `capability/${slug}`;
+}
 
 const operatingModel = [
   {
@@ -67,9 +204,60 @@ const trustSignals = [
 ];
 
 const momentumStats = [
-  { value: 'Multi-asset', label: 'Coverage across private equity, real estate, and investor operations' },
-  { value: 'Live', label: 'Performance visibility without waiting for static reporting cycles' },
-  { value: 'Unified', label: 'Workflow from acquisition model to investor distribution record' },
+  { value: 'One system', label: 'A single operational record for capital, assets, and investor workflows' },
+  { value: 'Operator-first', label: 'Built around daily execution instead of a reporting layer added later' },
+  { value: 'Audit-aware', label: 'Governance, approvals, and reporting designed into the workflow foundation' },
+];
+
+const reviewSignals = [
+  {
+    icon: FileSearch,
+    label: 'Problem',
+    title: 'Private market operations still run across too many disconnected tools.',
+    body: 'Capital activity, asset execution, and investor reporting are often managed across spreadsheets, inboxes, and point solutions that do not share context.',
+  },
+  {
+    icon: Workflow,
+    label: 'Solution',
+    title: 'Finance Remade turns those workflows into one operating system.',
+    body: 'The product combines portfolio visibility, asset operations, governance, and investor reporting in a single application so the record used for execution is the same record used for oversight.',
+  },
+  {
+    icon: Landmark,
+    label: 'Why now',
+    title: 'Institutional expectations are rising faster than internal tooling quality.',
+    body: 'Investment teams need tighter controls, faster reporting, and more operational clarity across increasingly complex structures, but most internal processes have not caught up.',
+  },
+  {
+    icon: Rocket,
+    label: 'Product wedge',
+    title: 'The wedge is operational depth, not surface-level financial dashboards.',
+    body: 'This is positioned as workflow infrastructure for firms managing complex assets and investor obligations, which creates stronger product stickiness than lightweight analytics alone.',
+  },
+];
+
+const roadmapPhases = [
+  {
+    phase: 'Phase 1',
+    title: 'Unify the operating record',
+    body: 'Consolidate portfolio, investor, and asset workflows into a single application layer that teams can use daily.',
+  },
+  {
+    phase: 'Phase 2',
+    title: 'Automate oversight and reporting',
+    body: 'Generate executive views, investor updates, and compliance-supporting records directly from operational activity.',
+  },
+  {
+    phase: 'Phase 3',
+    title: 'Expand decision support',
+    body: 'Use the structured operational record to surface predictive signals, execution bottlenecks, and portfolio-wide recommendations.',
+  },
+];
+
+const reviewerTakeaways = [
+  'A clear operational pain point with expensive fragmentation',
+  'A product wedge tied to real daily workflows rather than passive analytics',
+  'A credible path from execution tooling to higher-value automation and insight',
 ];
 
 const screenshotShowcase = [
@@ -145,6 +333,11 @@ function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const handleRequestIntro = () => {
+    setMobileOpen(false);
+    promptForDemoRequest('Navbar request intro');
+  };
+
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
     onScroll();
@@ -178,10 +371,11 @@ function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-950">
-            Partner Brief
-          </button>
-          <button className="rounded-full bg-slate-950 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800">
+          <button
+            type="button"
+            onClick={handleRequestIntro}
+            className="rounded-full bg-slate-950 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
+          >
             Request Intro
           </button>
         </div>
@@ -216,10 +410,11 @@ function Navbar() {
                 </a>
               ))}
               <div className="mt-2 flex flex-col gap-3">
-                <button className="rounded-full border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700">
-                  Partner Brief
-                </button>
-                <button className="rounded-full bg-slate-950 px-4 py-3 text-sm font-medium text-white">
+                <button
+                  type="button"
+                  onClick={handleRequestIntro}
+                  className="rounded-full bg-slate-950 px-4 py-3 text-sm font-medium text-white"
+                >
                   Request Intro
                 </button>
               </div>
@@ -237,6 +432,124 @@ function SectionLabel({ children }: { children: string }) {
       <span className="h-2 w-2 rounded-full bg-cyan-400" />
       {children}
     </div>
+  );
+}
+
+function CapabilityPage({
+  capability,
+}: {
+  capability: (typeof servicePillars)[number];
+}) {
+  const Icon = capability.icon;
+
+  return (
+    <main className="px-6 pb-20 pt-28 lg:px-8 lg:pb-28 lg:pt-36">
+      <section className="mx-auto max-w-7xl">
+        <a href="#platform" className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-slate-950">
+          <ChevronRight className="h-4 w-4 rotate-180" />
+          Back to platform overview
+        </a>
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+          <div>
+            <SectionLabel>Capability page</SectionLabel>
+            <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-cyan-50 text-cyan-700">
+              <Icon className="h-6 w-6" />
+            </div>
+            <h1 className="mt-6 max-w-[14ch] text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
+              {capability.title}
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">{capability.description}</p>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600">{capability.importance}</p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => promptForDemoRequest(`${capability.title} capability page`)}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+              >
+                Request application demo
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <a
+                href="#momentum"
+                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
+              >
+                Review application positioning
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                  Supporting product view
+                </div>
+                <div className="mt-1 text-2xl font-semibold text-slate-950">{capability.supportingView.title}</div>
+              </div>
+              <div className="rounded-full bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700">
+                {capability.supportingView.label}
+              </div>
+            </div>
+            <ScreenshotFrame
+              label={capability.supportingView.label}
+              src={capability.supportingView.src}
+              alt={capability.supportingView.description}
+              aspectRatio={capability.supportingView.aspectRatio}
+            />
+            <p className="mt-4 text-sm leading-6 text-slate-600">{capability.supportingView.description}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto mt-16 grid max-w-7xl gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-[0_20px_45px_rgba(15,23,42,0.05)]">
+          <SectionLabel>Why it matters</SectionLabel>
+          <h2 className="text-3xl font-semibold tracking-tight text-slate-950">Importance in the application</h2>
+          <p className="mt-5 text-base leading-7 text-slate-600">{capability.challenge}</p>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {capability.outcomes.map((outcome) => (
+              <div key={outcome} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-700">
+                {outcome}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-slate-200 bg-slate-950 p-7 text-white shadow-[0_20px_45px_rgba(15,23,42,0.12)]">
+          <SectionLabel>Automation focus</SectionLabel>
+          <h2 className="text-3xl font-semibold tracking-tight text-white">What the platform automates</h2>
+          <div className="mt-6 space-y-3">
+            {capability.automation.map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-6 text-slate-200">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto mt-16 max-w-7xl rounded-[2rem] border border-slate-200 bg-white p-7 shadow-[0_20px_45px_rgba(15,23,42,0.05)]">
+        <SectionLabel>How it works</SectionLabel>
+        <h2 className="text-3xl font-semibold tracking-tight text-slate-950">How the application goes about achieving it</h2>
+        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          {capability.approach.map((step, index) => (
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.35, delay: index * 0.08 }}
+              className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5"
+            >
+              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Step {index + 1}</div>
+              <p className="mt-3 text-base leading-7 text-slate-700">{step}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -518,32 +831,59 @@ export default function App() {
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 70]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0.35]);
+  const [activeCapabilitySlug, setActiveCapabilitySlug] = useState<string | null>(() =>
+    typeof window === 'undefined' ? null : getCapabilitySlugFromHash(window.location.hash),
+  );
+
+  useEffect(() => {
+    const onHashChange = () => {
+      setActiveCapabilitySlug(getCapabilitySlugFromHash(window.location.hash));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const activeCapability = servicePillars.find((pillar) => pillar.slug === activeCapabilitySlug) ?? null;
 
   return (
     <div id="top" className="min-h-screen overflow-x-hidden bg-[#f7fafc] text-slate-950 selection:bg-slate-950 selection:text-white">
       <Navbar />
 
+      {activeCapability ? (
+        <CapabilityPage capability={activeCapability} />
+      ) : (
       <main>
         <section className="relative overflow-hidden px-6 pb-20 pt-28 lg:px-8 lg:pb-28 lg:pt-36">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.18),_transparent_34%),radial-gradient(circle_at_85%_15%,_rgba(14,165,233,0.10),_transparent_24%),linear-gradient(180deg,_#ffffff_0%,_#f7fafc_50%,_#eef4f8_100%)]" />
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" />
           <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,0.84fr)_minmax(32rem,1.16fr)] lg:items-center">
             <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-2xl">
-              <SectionLabel>Investor-grade platform overview</SectionLabel>
-              <h1 className="max-w-[12ch] text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-                Operating infrastructure for complex investment businesses.
+              <SectionLabel>Product overview</SectionLabel>
+              <h1 className="max-w-[13ch] text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+                Operating software for complex private market workflows.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 sm:text-xl">
-                Finance Remade gives investors and strategic partners a clean view of how capital, assets, and governance
-                are coordinated across the platform.
+                Finance Remade is building an application for firms that manage capital, assets, investor relationships,
+                and governance across fragmented systems. The goal is to replace scattered operating workflows with one
+                structured platform that scales with institutional expectations.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800">
-                  Schedule a walkthrough
+                <button
+                  type="button"
+                  onClick={() => promptForDemoRequest('Hero schedule walkthrough')}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                >
+                  Request product walkthrough
                   <ArrowRight className="h-4 w-4" />
                 </button>
-                <button className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-950">
-                  Review partner materials
+                <button
+                  type="button"
+                  onClick={() => promptForDemoRequest('Hero partner materials')}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
+                >
+                  Request intro
                 </button>
               </div>
               <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -562,7 +902,7 @@ export default function App() {
 
         <section className="border-y border-slate-200 bg-slate-950 px-6 py-4 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-4 text-sm text-slate-300 md:grid-cols-4 md:items-center">
-            <div className="font-medium text-white">Built for investor confidence and operating depth.</div>
+            <div className="font-medium text-white">Built for operational depth, investor trust, and institutional scale.</div>
             <div className="flex items-center gap-2">
               <Blocks className="h-4 w-4 text-cyan-300" />
               Multi-asset visibility
@@ -578,16 +918,58 @@ export default function App() {
           </div>
         </section>
 
+        <section id="thesis" className="px-6 py-20 lg:px-8 lg:py-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="max-w-3xl">
+              <SectionLabel>Product thesis</SectionLabel>
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                The core idea behind the platform, explained clearly.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-slate-600">
+                Finance Remade is not just presenting analytics. It is building workflow infrastructure for private market
+                firms that need one reliable system for execution, reporting, and governance.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-6 lg:grid-cols-2">
+              {reviewSignals.map((signal, index) => (
+                <motion.article
+                  key={signal.label}
+                  initial={{ opacity: 0, y: 22 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.4, delay: index * 0.06 }}
+                  className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-[0_20px_45px_rgba(15,23,42,0.05)]"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-700">
+                      <signal.icon className="h-5 w-5" />
+                    </div>
+                    <div className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                      {signal.label}
+                    </div>
+                  </div>
+                  <h3 className="mt-6 max-w-[20ch] text-2xl font-semibold tracking-tight text-slate-950">
+                    {signal.title}
+                  </h3>
+                  <p className="mt-4 text-base leading-7 text-slate-600">{signal.body}</p>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="platform" className="px-6 py-20 lg:px-8 lg:py-28">
           <div className="mx-auto max-w-7xl">
             <div className="max-w-3xl">
               <SectionLabel>Platform overview</SectionLabel>
               <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                The services that matter most to investors and strategic partners.
+                The core capabilities that make the product strategically valuable.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-600">
-                Finance Remade presents the business at the right altitude: what the platform covers, where it creates
-                leverage, and why its operating model is difficult to replicate.
+                The application is strongest where operational complexity is highest: portfolio visibility, asset execution,
+                and institutional governance. These are the layers that are painful to coordinate manually and hard to replace
+                once embedded.
               </p>
             </div>
 
@@ -607,7 +989,11 @@ export default function App() {
                   </div>
                   <h3 className="mt-6 text-2xl font-semibold tracking-tight text-slate-950">{pillar.title}</h3>
                   <p className="mt-4 text-base leading-7 text-slate-600">{pillar.description}</p>
-                  <button className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-slate-950">
+                  <button
+                    type="button"
+                    onClick={() => setCapabilityHash(pillar.slug)}
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-slate-950"
+                  >
                     Explore capability
                     <ChevronRight className="h-4 w-4" />
                   </button>
@@ -645,16 +1031,16 @@ export default function App() {
                 className="rounded-[2rem] border border-slate-200 bg-slate-950 p-5 text-white shadow-[0_20px_45px_rgba(15,23,42,0.12)]"
               >
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">Why this matters</div>
-                <h3 className="mt-3 text-2xl font-semibold tracking-tight">Let the platform do the heavy work.</h3>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight">The product value is in the operating layer.</h3>
                 <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Investors should see product substance early. Larger screenshots create that signal faster than abstract
-                  claims alone.
+                  The application is meant to become system-of-record infrastructure, not just presentation software. The
+                  visual story needs to reinforce that depth without feeling heavy or overexplained.
                 </p>
                 <div className="mt-6 space-y-3">
                   {[
-                    'Show the portfolio command center above the fold',
-                    'Use supporting screenshots to explain workflows',
-                    'Keep motion focused on transitions, not decoration',
+                    'Lead with execution workflows rather than generic analytics claims',
+                    'Use screenshots to prove product depth and operational specificity',
+                    'Keep the story focused on scalability, controls, and automation',
                   ].map((item) => (
                     <div key={item} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200">
                       {item}
@@ -682,11 +1068,12 @@ export default function App() {
             <div>
               <SectionLabel>Operating model</SectionLabel>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-                A platform connecting portfolio oversight, asset execution, and investor communication.
+                A workflow stack connecting portfolio oversight, asset execution, and investor communication.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-300">
-                Finance Remade links daily execution with board-level visibility so operating teams, finance leaders, and
-                investors are working from the same source of truth.
+                The operating model shows how the company moves from fragmented internal processes to durable software
+                infrastructure. Execution data is captured once, interpreted centrally, and reused across management,
+                reporting, and governance workflows.
               </p>
               <div className="mt-10 space-y-5">
                 {operatingModel.map((item, index) => (
@@ -741,11 +1128,12 @@ export default function App() {
               <div className="max-w-2xl">
                 <SectionLabel>Trust architecture</SectionLabel>
                 <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                  Governance and reporting actively being developed and refined.
+                  Governance is treated as a product layer, not an afterthought.
                 </h2>
                 <p className="mt-5 text-lg leading-8 text-slate-600">
-                  This part of the application is still in progress. The team is actively shaping governance controls,
-                  reporting flows, and due-diligence views so oversight stays close to the underlying operational record.
+                  Strong investment software has to satisfy operators and oversight at the same time. Finance Remade is being
+                  shaped so permissions, reporting history, and investor-facing records are built into the same workflows used
+                  every day by the team.
                 </p>
               </div>
               <div className="grid gap-4">
@@ -769,31 +1157,75 @@ export default function App() {
           </div>
         </section>
 
+        <section id="roadmap" className="px-6 pb-20 lg:px-8 lg:pb-28">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+              <div className="max-w-2xl">
+                <SectionLabel>Platform roadmap</SectionLabel>
+                <h2 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                  A credible progression from workflow software to intelligence layer.
+                </h2>
+                <p className="mt-5 text-lg leading-8 text-slate-600">
+                  The sequencing matters. The product starts by becoming useful in the daily workflow, then automates
+                  oversight and reporting, and only then expands into higher-value decision support.
+                </p>
+                <div className="mt-8 space-y-3">
+                  {reviewerTakeaways.map((item) => (
+                    <div key={item} className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm leading-6 text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.04)]">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                {roadmapPhases.map((phase, index) => (
+                  <motion.div
+                    key={phase.phase}
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.35, delay: index * 0.08 }}
+                    className="rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(180deg,_rgba(255,255,255,0.98),_rgba(240,249,255,0.95))] p-6 shadow-[0_18px_40px_rgba(15,23,42,0.05)]"
+                  >
+                    <div className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-700">{phase.phase}</div>
+                    <h3 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">{phase.title}</h3>
+                    <p className="mt-3 text-base leading-7 text-slate-600">{phase.body}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="momentum" className="px-6 pb-20 lg:px-8 lg:pb-28">
           <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-slate-200 bg-[linear-gradient(135deg,_#0f172a,_#111827_58%,_#083344)] px-6 py-10 text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)] lg:px-10 lg:py-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
               <div className="max-w-3xl">
-                <SectionLabel>Partner momentum</SectionLabel>
+                <SectionLabel>Application outlook</SectionLabel>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-                A landing page that sells the shape of the business before the first meeting.
+                An application designed to unify operations, reporting, and governance.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-300">
-                Present the platform with a high-level operating narrative, richer motion, clearer service framing, and
-                credible product visuals for investor and partner conversations.
+                Finance Remade is being developed to give investment teams one structured environment for portfolio
+                visibility, asset execution, investor communication, and institutional controls. The next step is a live
+                walkthrough for anyone who wants to evaluate how the application is taking shape in more detail.
               </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <button className="rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-950 transition hover:bg-slate-100">
-                  Book partner review
-                </button>
-                <button className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10">
-                  Open executive demo
+                <button
+                  type="button"
+                  onClick={() => promptForDemoRequest('Momentum application demo')}
+                  className="rounded-full bg-white px-6 py-3 text-sm font-medium text-slate-950 transition hover:bg-slate-100"
+                >
+                  Request application demo
                 </button>
               </div>
             </div>
           </div>
         </section>
       </main>
+      )}
     </div>
   );
 }

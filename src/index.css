@@ -13,19 +13,26 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --page-bg: #f7fafc;
+  --page-ink: #0f172a;
+  --page-grid: rgba(148, 163, 184, 0.07);
 }
 
 html {
   scroll-behavior: smooth;
+  background: var(--page-bg);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  color: var(--page-ink);
   background:
-    radial-gradient(circle at top left, rgba(34, 211, 238, 0.08), transparent 28%),
-    linear-gradient(180deg, #ffffff 0%, #f7fafc 52%, #eef4f8 100%);
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.1), transparent 30%),
+    radial-gradient(circle at 85% 12%, rgba(14, 165, 233, 0.09), transparent 22%),
+    radial-gradient(circle at 50% 100%, rgba(226, 232, 240, 0.65), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f7fafc 52%, #edf4f8 100%);
 }
 
 body::before {
@@ -34,15 +41,19 @@ body::before {
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+    linear-gradient(var(--page-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--page-grid) 1px, transparent 1px);
   background-size: 64px 64px;
-  mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.7), transparent 85%);
+  mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.78), transparent 88%);
 }
 
 button,
 a {
   -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  letter-spacing: 0.01em;
 }
 
 #root {
