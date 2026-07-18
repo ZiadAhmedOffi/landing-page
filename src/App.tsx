@@ -8,7 +8,6 @@ import {
   FileSearch,
   Globe2,
   Landmark,
-  LineChart,
   LockKeyhole,
   Menu,
   Radar,
@@ -19,6 +18,7 @@ import {
   X,
 } from 'lucide-react';
 import { ScreenshotFrame } from './components/ScreenshotFrame';
+import aafaqLogo from './assets/aafaq-logo.png';
 
 const DEMO_REQUEST_EMAIL = 'ziadahmedoffi@gmail.com';
 
@@ -59,11 +59,11 @@ function promptForDemoRequest(sourceLabel: string) {
 
 const navItems = [
   { label: 'Thesis', href: '#thesis' },
-  { label: 'Platform', href: '#platform' },
-  { label: 'Operations', href: '#operations' },
+  { label: 'Capabilities', href: '#platform' },
+  { label: 'Model', href: '#operations' },
   { label: 'Trust', href: '#trust' },
   { label: 'Roadmap', href: '#roadmap' },
-  { label: 'Momentum', href: '#momentum' },
+  { label: 'Outlook', href: '#momentum' },
 ];
 
 const servicePillars = [
@@ -219,7 +219,7 @@ const reviewSignals = [
   {
     icon: Workflow,
     label: 'Solution',
-    title: 'Finance Remade turns those workflows into one operating system.',
+    title: 'Afaq-Capital turns those workflows into one operating system.',
     body: 'The product combines portfolio visibility, asset operations, governance, and investor reporting in a single application so the record used for execution is the same record used for oversight.',
   },
   {
@@ -353,11 +353,9 @@ function Navbar() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <a href="#top" className="flex items-center gap-3 text-slate-950">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 shadow-[0_18px_40px_rgba(15,23,42,0.15)]">
-            <LineChart className="h-5 w-5 text-cyan-300" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-slate-500">Finance Remade</div>
+          <img src={aafaqLogo} alt="AFAQ-Capital logo" className="h-9 w-auto sm:h-10" />
+          <div className="hidden min-w-0 sm:block">
+            <div className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-slate-500">Afaq-Capital</div>
             <div className="truncate text-sm font-semibold text-slate-950">Investment Operating System</div>
           </div>
         </a>
@@ -837,8 +835,12 @@ export default function App() {
 
   useEffect(() => {
     const onHashChange = () => {
-      setActiveCapabilitySlug(getCapabilitySlugFromHash(window.location.hash));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const capabilitySlug = getCapabilitySlugFromHash(window.location.hash);
+      setActiveCapabilitySlug(capabilitySlug);
+
+      if (capabilitySlug) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     };
 
     window.addEventListener('hashchange', onHashChange);
@@ -860,12 +862,19 @@ export default function App() {
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" />
           <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,0.84fr)_minmax(32rem,1.16fr)] lg:items-center">
             <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-2xl">
+              <div className="mb-6 inline-flex items-center gap-4">
+                <img src={aafaqLogo} alt="AFAQ-Capital logo" className="h-12 w-auto sm:h-14" />
+                <div className="hidden text-left sm:block">
+                  <div className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-400">Brand mark</div>
+                  <div className="mt-1 text-sm font-medium text-slate-600">Application concept and operating platform</div>
+                </div>
+              </div>
               <SectionLabel>Product overview</SectionLabel>
               <h1 className="max-w-[13ch] text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
                 Operating software for complex private market workflows.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 sm:text-xl">
-                Finance Remade is building an application for firms that manage capital, assets, investor relationships,
+                Afaq-Capital is building an application for firms that manage capital, assets, investor relationships,
                 and governance across fragmented systems. The goal is to replace scattered operating workflows with one
                 structured platform that scales with institutional expectations.
               </p>
@@ -926,7 +935,7 @@ export default function App() {
                 The core idea behind the platform, explained clearly.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-600">
-                Finance Remade is not just presenting analytics. It is building workflow infrastructure for private market
+                Afaq-Capital is not just presenting analytics. It is building workflow infrastructure for private market
                 firms that need one reliable system for execution, reporting, and governance.
               </p>
             </div>
@@ -1131,7 +1140,7 @@ export default function App() {
                   Governance is treated as a product layer, not an afterthought.
                 </h2>
                 <p className="mt-5 text-lg leading-8 text-slate-600">
-                  Strong investment software has to satisfy operators and oversight at the same time. Finance Remade is being
+                  Strong investment software has to satisfy operators and oversight at the same time. Afaq-Capital is being
                   shaped so permissions, reporting history, and investor-facing records are built into the same workflows used
                   every day by the team.
                 </p>
@@ -1207,7 +1216,7 @@ export default function App() {
                 An application designed to unify operations, reporting, and governance.
               </h2>
               <p className="mt-5 text-lg leading-8 text-slate-300">
-                Finance Remade is being developed to give investment teams one structured environment for portfolio
+                Afaq-Capital is being developed to give investment teams one structured environment for portfolio
                 visibility, asset execution, investor communication, and institutional controls. The next step is a live
                 walkthrough for anyone who wants to evaluate how the application is taking shape in more detail.
               </p>
